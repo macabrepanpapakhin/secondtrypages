@@ -42,12 +42,6 @@ const Navbar = () => {
     <AppBar className={classes.appBar} position="static" color="inherit">
       <Link to="/" className={classes.brandContainer}>
         <img src={memoryText} alt="icon" height="45px" />
-        <img
-          className={classes.image}
-          src={memoryLogo}
-          alt="memories"
-          height="40px"
-        />
       </Link>
       <Toolbar className={classes.toolbar}>
         {user ? (
