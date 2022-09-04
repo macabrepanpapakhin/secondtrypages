@@ -5,6 +5,7 @@ export const createOrGetUser = (response) => {
   console.log(decoded);
   try {
     console.log(decoded);
+    console.log("decoded");
   } catch (error) {
     console.log(error);
   }

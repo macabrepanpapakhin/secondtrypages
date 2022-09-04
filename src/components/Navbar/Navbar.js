@@ -6,6 +6,9 @@ import { Link, BrowserRouter } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+import memoryLogo from "../../images/memorylogo.png";
+import memoryText from "../../images/memeorytext.png";
 const Navbar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -13,8 +16,21 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   useEffect(() => {
-    const token = user?.token;
-    setUser(JSON.parse(localStorage.getItem("profile")));
+    try {
+      setUser(JSON.parse(localStorage.getItem("profile")));
+      if (localStorage.getItem("fromGoogle") === "false") {
+        const token = user?.token;
+        console.log("user toekn is ");
+        console.log(token);
+        if (token) {
+          const decodedToken = jwt_decode(token);
+          if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+          console.log("token expires");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }, [location]);
   const logout = () => {
     console.log("loggin out");
@@ -24,35 +40,27 @@ const Navbar = () => {
   };
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
-      <div className={classes.brandContainer}>
-        <Typography
-          className={classes.heading}
-          component={Link}
-          to="/"
-          variant="h2"
-          align="center"
-        >
-          Memories
-        </Typography>
+      <Link to="/" className={classes.brandContainer}>
+        <img src={memoryText} alt="icon" height="45px" />
         <img
           className={classes.image}
-          src={memories}
+          src={memoryLogo}
           alt="memories"
-          height="60"
+          height="40px"
         />
-      </div>
+      </Link>
       <Toolbar className={classes.toolbar}>
         {user ? (
           <div className={classes.profile}>
             <Avatar
               className={classes.purple}
-              alt={user.name}
-              src={user.picture}
+              alt={user.result.name}
+              src={user.result.picture}
             >
-              {user.name.charAt(0)}
+              {user.result.name.charAt(0)}
             </Avatar>
             <Typography className={classes.userName} variant="h6">
-              {user.name}
+              {user.result.name}
             </Typography>
             <Button
               variant="contained"
